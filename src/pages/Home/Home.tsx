@@ -22,6 +22,7 @@ import Modal from "components/UI/molecules/Modal";
 import RegisterPatientModal from "components/UI/molecules/RegisterPatientModal";
 import { useForm } from "react-hook-form";
 import TableActions from "components/UI/molecules/TableActions";
+import turnIntoDatabaseDate from "utils/functions/turnIntoDatabaseDate";
 
 const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
   useService: () => BaseService<T, U>,
@@ -54,9 +55,6 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
     } = useForm();
 
     useEffect(() => {
-      const turnIntoDatabaseDate = (date: Date) =>
-        date.toISOString().split("T")[0];
-
       setValue("birth_date", turnIntoDatabaseDate(date), {
         shouldValidate: true,
       });
@@ -77,6 +75,10 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
     };
 
     const onCreatePatient = async (data: unknown) => {
+      console.log(data);
+      setValue("birth_date", turnIntoDatabaseDate(date), {
+        shouldValidate: true,
+      });
       onLoadingCallback(async () => await create(dtoToEntityMapper(data as U)));
       onCloseCreatePatientModal();
     };
