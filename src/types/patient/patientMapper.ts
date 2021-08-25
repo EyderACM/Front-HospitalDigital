@@ -1,7 +1,8 @@
+import { DtoToEntity } from "types/BaseMapper";
 import IPatient from "./patient";
 import IPatientDTO from "./patientDTO";
 
-const dtoToEntityMapper = ({
+const dtoToEntityMapper: DtoToEntity<IPatientDTO, IPatient> = ({
   id,
   first_name,
   last_name,
@@ -19,11 +20,10 @@ const dtoToEntityMapper = ({
   sex,
   birthDate: birth_date,
   cityName: city_name,
-  isActive: is_active,
   registeredDate: created_at,
 });
 
-const entityToDTOMapper = ({
+const entityToDTOMapper: DtoToEntity<IPatient, IPatientDTO> = ({
   firstName,
   lastName,
   age,
