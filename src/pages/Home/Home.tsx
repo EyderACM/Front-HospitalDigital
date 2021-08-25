@@ -1,21 +1,16 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   useColorModeValue,
-  IconButton,
   Table,
   Tbody,
   Td,
   Th,
   Thead,
   Tr,
-  ButtonGroup,
   useDisclosure,
-  Flex,
   Button,
   HStack,
 } from "@chakra-ui/react";
-import { BsBoxArrowUpRight, BsFillTrashFill } from "react-icons/bs";
-import { AiFillEdit } from "react-icons/ai";
 import SidebarPanel from "components/templates/SidebarPanel";
 import BaseService, { BaseEntity } from "types/BaseService";
 import { patientGenerator } from "types/patient/patient";
@@ -25,6 +20,8 @@ import { hospitalTableGenerator } from "types/hospital/hospital";
 import { guardianTableGenerator } from "types/guardian/guardian";
 import Modal from "components/UI/molecules/Modal";
 import RegisterPatientModal from "components/UI/molecules/RegisterPatientModal";
+import { useForm } from "react-hook-form";
+import TableActions from "components/UI/molecules/TableActions";
 
 const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
   useService: () => BaseService<T, U>,
@@ -32,6 +29,11 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
 ) => {
   return function Home() {
     const [searchValue, setSearchValue] = useState("");
+    const [entities, setEntities] = useState<U[]>([]);
+    const [toDeleteEntity, setToDeleteEntity] = useState<number>(-1);
+    const [onLoading, setOnLoading] = useState(false);
+    const { getAll, delete: deleteEntity, create } = useService();
+    const [date, setDate] = useState(new Date());
     const {
       isOpen: isDeleteModalOpen,
       onOpen: onOpenDeleteModal,
@@ -42,30 +44,47 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
       onOpen: onOpenCreatePatientModal,
       onClose: onCloseCreatePatientModal,
     } = useDisclosure();
-    const [entities, setEntities] = useState<U[]>([]);
-    const [toDeleteEntity, setToDeleteEntity] = useState<number>(-1);
-    const [onLoading, setOnLoading] = useState(false);
-    const { getAll, delete: deleteEntity } = useService();
+    const {
+      handleSubmit,
+      register,
+      setValue,
+      formState: { errors, isSubmitting },
+    } = useForm();
+
+    useEffect(() => {
+      const turnIntoDatabaseDate = (date: Date) =>
+        date.toISOString().split("T")[0];
+
+      setValue("birth_date", turnIntoDatabaseDate(date), {
+        shouldValidate: true,
+      });
+    }, [date]);
 
     useEffect(() => {
       async function assignEntites() {
         const newEntities = await getAll();
         setEntities(newEntities);
       }
-
       assignEntites();
     }, [getAll]);
+
+    const onCreatePatient = async (data: unknown) => {
+      setOnLoading(true);
+      await create(dtoToEntityMapper(data as U));
+      setOnLoading(false);
+      onCloseCreatePatientModal();
+    };
 
     const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) =>
       setSearchValue(event.target.value);
 
     const onDelete = (id: number) => async () => {
+      setOnLoading(true);
       await deleteEntity(id);
       setOnLoading(false);
       onCloseDeleteModal();
     };
     const onOpenDeleteModalPreconfirm = (id: number) => () => {
-      setOnLoading(true);
       onOpenDeleteModal();
       setToDeleteEntity(id);
     };
@@ -117,28 +136,11 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
                           i !== 0 ? <Td key={key}>{value}</Td> : <></>
                       )}
                       <Td>
-                        {" "}
-                        <ButtonGroup variant="solid" size="sm" spacing={3}>
-                          <IconButton
-                            aria-label="print-button"
-                            colorScheme="blue"
-                            icon={<BsBoxArrowUpRight />}
-                          />
-                          <IconButton
-                            aria-label="edit-button"
-                            colorScheme="green"
-                            icon={<AiFillEdit />}
-                          />
-                          <IconButton
-                            aria-label="delete-button"
-                            colorScheme="red"
-                            variant="outline"
-                            onClick={onOpenDeleteModalPreconfirm(
-                              entity.id || -1
-                            )}
-                            icon={<BsFillTrashFill />}
-                          />
-                        </ButtonGroup>
+                        <TableActions
+                          deleteAction={onOpenDeleteModalPreconfirm(
+                            entity.id || -1
+                          )}
+                        />
                       </Td>
                     </Tr>
                   ))}
@@ -159,6 +161,10 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
           isOpen={isCreatePatientModalOpen}
           isLoading={onLoading}
           onConfirm={() => {}}
+          birthdate={date}
+          setBirthdate={setDate}
+          onSubmit={handleSubmit(onCreatePatient)}
+          register={register}
         />
       </>
     );

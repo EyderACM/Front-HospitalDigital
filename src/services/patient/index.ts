@@ -10,6 +10,8 @@ import getPatient from "./getPatient";
 import updatePatient from "./updatePatient";
 
 export const patientsUrl = `${environmentVariables.apiUrl}/patients`;
+export const guardiansUrl = `${environmentVariables.apiUrl}/guardians`;
+export const hospitalsUrl = `${environmentVariables.apiUrl}/hospitals`;
 
 const usePatientService = (): BaseService<IPatient, IPatientDTO> => {
   const { data: patients } = useSWR<IPatientDTO[]>(patientsUrl, fetcher);

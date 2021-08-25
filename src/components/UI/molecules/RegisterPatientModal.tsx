@@ -16,7 +16,12 @@ import {
   NumberInputField,
   Select,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
+import {
+  FieldValues,
+  useForm,
+  UseFormHandleSubmit,
+  UseFormRegister,
+} from "react-hook-form";
 import { SingleDatepicker } from "chakra-dayzed-datepicker";
 
 interface IModal {
@@ -24,6 +29,10 @@ interface IModal {
   onClose: () => void;
   onConfirm: () => void;
   isLoading?: boolean;
+  birthdate: Date;
+  setBirthdate: React.Dispatch<React.SetStateAction<Date>>;
+  register: UseFormRegister<FieldValues>;
+  onSubmit: any;
 }
 
 const RegisterPatientModal: React.FC<IModal> = ({
@@ -31,32 +40,17 @@ const RegisterPatientModal: React.FC<IModal> = ({
   onClose,
   onConfirm,
   isLoading,
+  register,
+  birthdate,
+  setBirthdate,
+  onSubmit,
 }) => {
-  const {
-    handleSubmit,
-    register,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm();
-  const [date, setDate] = useState(new Date());
-
-  useEffect(() => {
-    const turnIntoDatabaseDate = (date: Date) =>
-      date.toISOString().split("T")[0];
-
-    setValue("birth_day", turnIntoDatabaseDate(date), { shouldValidate: true });
-  }, [date]);
-
-  const onSubmit = (data: unknown) => {
-    console.log(data);
-  };
-
   return (
     <>
       {" "}
       <ChakraModal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onSubmit}>
           <ModalContent>
             <ModalHeader>Insert Patient Data</ModalHeader>
             <ModalCloseButton />
@@ -117,8 +111,8 @@ const RegisterPatientModal: React.FC<IModal> = ({
                   <FormLabel htmlFor="birth_date">Birthdate</FormLabel>
                   <SingleDatepicker
                     id="birth_date"
-                    date={date}
-                    onDateChange={setDate}
+                    date={birthdate}
+                    onDateChange={setBirthdate}
                   />
                 </FormControl>
               </Flex>

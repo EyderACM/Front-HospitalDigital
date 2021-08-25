@@ -10,7 +10,11 @@ interface IPatientDTO {
   birth_date?: string;
   city_name: string;
   hospital?: IHospitalDTO;
+  hospital_name?: string;
   guardian?: IGuardianDTO;
+  guardian_first_name?: string;
+  guardian_last_name?: string;
+  guardian_phone?: string;
   is_active?: boolean;
   created_at?: string;
   updated_at?: string;
