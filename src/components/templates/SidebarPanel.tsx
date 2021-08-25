@@ -74,7 +74,7 @@ const SidebarPanel: React.FC<ISidebarPanel> = ({
             <Input
               value={searchValue}
               onChange={onSearchValueChange}
-              placeholder="Buscar..."
+              placeholder="Buscar por apellido..."
             />
           </InputGroup>
 

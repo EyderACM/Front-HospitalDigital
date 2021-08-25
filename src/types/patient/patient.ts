@@ -17,7 +17,6 @@ const patientGenerator = (): IPatient => ({
   sex: "",
   birthDate: "",
   cityName: "",
-  registeredDate: "",
 });
 
 export { patientGenerator };
