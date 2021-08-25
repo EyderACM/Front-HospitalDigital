@@ -18,16 +18,7 @@ import { FiMenu, FiSearch } from "react-icons/fi";
 import { BsMoon } from "react-icons/bs";
 import SidebarContent from "components/UI/molecules/SidebarContent";
 
-interface ISidebarPanel {
-  searchValue: string;
-  onSearchValueChange: (event: ChangeEvent<HTMLInputElement>) => void;
-}
-
-const SidebarPanel: React.FC<ISidebarPanel> = ({
-  searchValue,
-  onSearchValueChange,
-  children,
-}) => {
+const SidebarPanel: React.FC<ISidebarPanel> = ({ children }) => {
   const sidebar = useDisclosure();
   const { toggleColorMode } = useColorMode();
 
@@ -69,15 +60,6 @@ const SidebarPanel: React.FC<ISidebarPanel> = ({
             icon={<FiMenu />}
             size="sm"
           />
-          <InputGroup w="96" display="flex" mx={{ base: "10px", sm: "none" }}>
-            <InputLeftElement color="gray.500" children={<FiSearch />} />
-            <Input
-              value={searchValue}
-              onChange={onSearchValueChange}
-              placeholder="Buscar por apellido..."
-            />
-          </InputGroup>
-
           <Flex align="center">
             <IconButton
               aria-label="dark mode button"

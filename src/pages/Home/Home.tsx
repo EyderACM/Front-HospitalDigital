@@ -22,9 +22,6 @@ import Modal from "components/UI/molecules/Modal";
 import RegisterPatientModal from "components/UI/molecules/RegisterPatientModal";
 import { useForm } from "react-hook-form";
 import TableActions from "components/UI/molecules/TableActions";
-import Router from "next/router";
-import { mutate } from "swr";
-import { patientsUrl } from "services/patient";
 
 const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
   useService: () => BaseService<T, U>,
@@ -32,7 +29,6 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
   dtoToExtendedDto: RawDtoToExtendedDto<U>
 ) => {
   return function Home() {
-    const [searchValue, setSearchValue] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [entities, setEntities] = useState<U[]>([]);
     const [toDeleteEntity, setToDeleteEntity] = useState<number>(-1);
@@ -90,9 +86,6 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
       onCloseCreatePatientModal();
     };
 
-    const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) =>
-      setSearchValue(event.target.value);
-
     const onDelete = (id: number) => async () => {
       setOnLoading(true);
       await deleteEntity(id);
@@ -118,10 +111,7 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
 
     return (
       <>
-        <SidebarPanel
-          searchValue={searchValue}
-          onSearchValueChange={handleSearchChange}
-        >
+        <SidebarPanel>
           <HStack spacing="10px" mb="10px" justifyContent="flex-start">
             <Button colorScheme="teal" size="sm" onClick={onOpenCreateModal}>
               Registrar Paciente
