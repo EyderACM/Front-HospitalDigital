@@ -17,6 +17,8 @@ import BaseService from "types/BaseService";
 import { patientGenerator } from "types/patient/patient";
 import { DtoToEntity } from "types/BaseMapper";
 import { When } from "react-if";
+import { hospitalTableGenerator } from "types/hospital/hospital";
+import { guardianTableGenerator } from "types/guardian/guardian";
 
 const AdminPanelViewFactory = <T, U>(
   useService: () => BaseService<T, U>,
@@ -49,10 +51,15 @@ const AdminPanelViewFactory = <T, U>(
           variant="simple"
           bg={useColorModeValue("white", "gray.800")}
           overflowX="scroll"
+          size="sm"
         >
           <Thead>
             <Tr>
-              {Object.keys(patientGenerator()).map((data) => (
+              {Object.keys({
+                ...patientGenerator(),
+                ...hospitalTableGenerator(),
+                ...guardianTableGenerator(),
+              }).map((data) => (
                 <Th>{data}</Th>
               ))}
               <Th>Acciones</Th>

@@ -36,7 +36,7 @@ const SidebarPanel: React.FC<ISidebarPanel> = ({
       as="section"
       bg={useColorModeValue("gray.50", "gray.700")}
       minH="100vh"
-      overflowX={{ base: "scroll", sm: "hidden" }}
+      overflowX={{ base: "scroll", xl: "hidden" }}
     >
       <SidebarContent display={{ base: "none", md: "unset" }} />
       <Drawer
@@ -59,7 +59,7 @@ const SidebarPanel: React.FC<ISidebarPanel> = ({
           bg={useColorModeValue("white", "gray.800")}
           borderBottomWidth="1px"
           borderColor={useColorModeValue("inherit", "gray.700")}
-          borderRadius={{ base: "0 0 10px 0", sm: "none" }}
+          borderRadius={{ base: "0 0 10px 0", xl: "none" }}
           h="14"
         >
           <IconButton

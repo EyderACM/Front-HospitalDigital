@@ -10,14 +10,18 @@ const dtoToEntityMapper: DtoToEntity<IPatientDTO, IPatient> = ({
   sex,
   birth_date,
   city_name,
+  hospital,
+  guardian,
 }: IPatientDTO): IPatient => ({
   id,
   firstName: first_name,
   lastName: last_name,
   age,
   sex,
-  birthDate: birth_date,
   cityName: city_name,
+  hospitalName: hospital?.name,
+  guardianName: `${guardian?.first_name} ${guardian?.last_name}`,
+  guardianPhone: guardian?.phone,
 });
 
 const entityToDTOMapper: DtoToEntity<IPatient, IPatientDTO> = ({

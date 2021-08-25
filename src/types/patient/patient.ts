@@ -4,8 +4,11 @@ interface IPatient {
   lastName: string;
   age: number;
   sex: string;
-  birthDate: string;
+  birthDate?: string;
   cityName: string;
+  hospitalName?: string;
+  guardianName?: string;
+  guardianPhone?: string;
   isActive?: boolean;
   registeredDate?: string;
 }
@@ -15,7 +18,6 @@ const patientGenerator = (): IPatient => ({
   lastName: "",
   age: 0,
   sex: "",
-  birthDate: "",
   cityName: "",
 });
 
