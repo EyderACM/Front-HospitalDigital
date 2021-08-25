@@ -1,99 +1,92 @@
+import React, { ChangeEvent, useState } from "react";
 import {
-  Avatar,
-  Box,
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
-  Flex,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  useColorMode,
   useColorModeValue,
-  useDisclosure,
   IconButton,
+  Table,
+  TableCaption,
+  Tbody,
+  Td,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
+  ButtonGroup,
 } from "@chakra-ui/react";
-import { FiMenu, FiSearch } from "react-icons/fi";
-import { BsMoon } from "react-icons/bs";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import SidebarContent from "components/UI/molecules/SidebarContent";
+import { BsBoxArrowUpRight, BsFillTrashFill } from "react-icons/bs";
+import { AiFillEdit } from "react-icons/ai";
+import SidebarPanel from "components/templates/SidebarPanel";
 
 const Home = () => {
-  const sidebar = useDisclosure();
-  const { toggleColorMode } = useColorMode();
   const [searchValue, setSearchValue] = useState("");
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(event.target.value);
 
   return (
-    <Box
-      as="section"
-      bg={useColorModeValue("gray.50", "gray.700")}
-      minH="100vh"
+    <SidebarPanel
+      searchValue={searchValue}
+      onSearchValueChange={handleSearchChange}
     >
-      <SidebarContent display={{ base: "none", md: "unset" }} />
-      <Drawer
-        isOpen={sidebar.isOpen}
-        onClose={sidebar.onClose}
-        placement="left"
+      <Table
+        borderRadius="12px"
+        variant="simple"
+        bg={useColorModeValue("white", "gray.800")}
+        overflowX="scroll"
       >
-        <DrawerOverlay />
-        <DrawerContent>
-          <SidebarContent w="full" borderRight="none" />
-        </DrawerContent>
-      </Drawer>
-      <Box ml={{ base: 0, md: 60 }} transition=".3s ease">
-        <Flex
-          as="header"
-          align="center"
-          justify="space-between"
-          w="full"
-          px="4"
-          bg={useColorModeValue("white", "gray.800")}
-          borderBottomWidth="1px"
-          borderColor={useColorModeValue("inherit", "gray.700")}
-          h="14"
-        >
-          <IconButton
-            aria-label="Menu"
-            display={{ base: "inline-flex", md: "none" }}
-            onClick={sidebar.onOpen}
-            icon={<FiMenu />}
-            size="sm"
-          />
-          <InputGroup w="96" display="flex" mx={{ base: "10px", sm: "none" }}>
-            <InputLeftElement color="gray.500" children={<FiSearch />} />
-            <Input
-              value={searchValue}
-              onChange={handleSearchChange}
-              placeholder="Buscar..."
-            />
-          </InputGroup>
-
-          <Flex align="center">
-            <IconButton
-              aria-label="dark mode button"
-              icon={<BsMoon />}
-              onClick={toggleColorMode}
-              size="sm"
-            />
-            <Avatar
-              ml="4"
-              size="sm"
-              name="Doctor"
-              src="https://cdn.crello.com/api/media/small/283922438/stock-photo-serious-doctor-glasses-white-coat"
-              cursor="pointer"
-            />
-          </Flex>
-        </Flex>
-
-        <Box as="main" p="4">
-          {/* Add content here, remove div below  */}
-          <Box borderWidth="4px" borderStyle="dashed" rounded="md" h="96" />
-        </Box>
-      </Box>
-    </Box>
+        <TableCaption>Imperial to metric conversion factors</TableCaption>
+        <Thead>
+          <Tr>
+            <Th>To convert</Th>
+            <Th>into</Th>
+            <Th isNumeric>Value</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          <Tr>
+            <Td>inches</Td>
+            <Td>millimetres (mm)</Td>
+            <Td isNumeric>
+              {" "}
+              <ButtonGroup variant="solid" size="sm" spacing={3}>
+                <IconButton
+                  aria-label="print-button"
+                  colorScheme="blue"
+                  icon={<BsBoxArrowUpRight />}
+                />
+                <IconButton
+                  aria-label="edit-button"
+                  colorScheme="green"
+                  icon={<AiFillEdit />}
+                />
+                <IconButton
+                  aria-label="delete-button"
+                  colorScheme="red"
+                  variant="outline"
+                  icon={<BsFillTrashFill />}
+                />
+              </ButtonGroup>
+            </Td>
+          </Tr>
+          <Tr>
+            <Td>feet</Td>
+            <Td>centimetres (cm)</Td>
+            <Td isNumeric>30.48</Td>
+          </Tr>
+          <Tr>
+            <Td>yards</Td>
+            <Td>metres (m)</Td>
+            <Td isNumeric>0.91444</Td>
+          </Tr>
+        </Tbody>
+        <Tfoot>
+          <Tr>
+            <Th>To convert</Th>
+            <Th>into</Th>
+            <Th isNumeric>multiply by</Th>
+          </Tr>
+        </Tfoot>
+      </Table>
+    </SidebarPanel>
   );
 };
 
