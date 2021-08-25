@@ -1,6 +1,18 @@
-import { DtoToEntity } from "types/BaseMapper";
+import { DtoToEntity, RawDtoToExtendedDto } from "types/BaseMapper";
 import IPatient from "./patient";
 import IPatientDTO from "./patientDTO";
+
+const rawDtoToExtendedDto: RawDtoToExtendedDto<IPatientDTO> = ({
+  hospital,
+  guardian,
+  ...rest
+}: IPatientDTO): IPatientDTO => ({
+  hospital_name: hospital?.name,
+  guardian_first_name: guardian?.first_name,
+  guardian_last_name: guardian?.last_name,
+  guardian_phone: guardian?.phone,
+  ...rest,
+});
 
 const dtoToEntityMapper: DtoToEntity<IPatientDTO, IPatient> = ({
   id,
@@ -38,8 +50,6 @@ const entityToDTOMapper: DtoToEntity<IPatient, IPatientDTO> = ({
   sex,
   birthDate,
   cityName,
-  hospitalId,
-  guardianId,
 }: IPatient): IPatientDTO => ({
   first_name: firstName,
   last_name: lastName,
@@ -84,4 +94,5 @@ export {
   entityToDTOMapper,
   entityToRawDTO,
   entityToRawDTOMapper,
+  rawDtoToExtendedDto,
 };

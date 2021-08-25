@@ -5,11 +5,10 @@ import { entityToRawDTOMapper } from "types/patient/patientMapper";
 import { jsonApplication } from "utils/constants/headers";
 import Method from "utils/constants/methods";
 import { guardiansUrl, hospitalsUrl, patientsUrl } from ".";
-import parseFullName from "parse-full-name";
+import { parseFullName } from "parse-full-name";
 
 const createPatient = async (patient: IPatient): Promise<IPatientDTO> => {
-  const guardianName = parseFullName.parseFullName(patient.guardianName || "");
-  console.log(patient);
+  const guardianName = parseFullName(patient.guardianName || "");
 
   const guardian = await fetchJson(guardiansUrl, {
     method: Method.POST,

@@ -14,7 +14,7 @@ import {
 import SidebarPanel from "components/templates/SidebarPanel";
 import BaseService, { BaseEntity } from "types/BaseService";
 import { patientGenerator } from "types/patient/patient";
-import { DtoToEntity } from "types/BaseMapper";
+import { DtoToEntity, RawDtoToExtendedDto } from "types/BaseMapper";
 import { When } from "react-if";
 import { hospitalTableGenerator } from "types/hospital/hospital";
 import { guardianTableGenerator } from "types/guardian/guardian";
@@ -22,17 +22,22 @@ import Modal from "components/UI/molecules/Modal";
 import RegisterPatientModal from "components/UI/molecules/RegisterPatientModal";
 import { useForm } from "react-hook-form";
 import TableActions from "components/UI/molecules/TableActions";
+import Router from "next/router";
+import { mutate } from "swr";
+import { patientsUrl } from "services/patient";
 
 const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
   useService: () => BaseService<T, U>,
-  dtoToEntityMapper: DtoToEntity<U, T>
+  dtoToEntityMapper: DtoToEntity<U, T>,
+  dtoToExtendedDto: RawDtoToExtendedDto<U>
 ) => {
   return function Home() {
     const [searchValue, setSearchValue] = useState("");
+    const [isEditing, setIsEditing] = useState(false);
     const [entities, setEntities] = useState<U[]>([]);
     const [toDeleteEntity, setToDeleteEntity] = useState<number>(-1);
     const [onLoading, setOnLoading] = useState(false);
-    const { getAll, delete: deleteEntity, create } = useService();
+    const { getAll, delete: deleteEntity, create, update } = useService();
     const [date, setDate] = useState(new Date());
     const {
       isOpen: isDeleteModalOpen,
@@ -48,6 +53,7 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
       handleSubmit,
       register,
       setValue,
+      reset,
       formState: { errors, isSubmitting },
     } = useForm();
 
@@ -75,6 +81,15 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
       onCloseCreatePatientModal();
     };
 
+    const onEditPatient = async (data: unknown) => {
+      setOnLoading(true);
+      await update(dtoToEntityMapper(data as U));
+      setOnLoading(false);
+
+      setIsEditing(false);
+      onCloseCreatePatientModal();
+    };
+
     const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) =>
       setSearchValue(event.target.value);
 
@@ -84,9 +99,21 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
       setOnLoading(false);
       onCloseDeleteModal();
     };
+
     const onOpenDeleteModalPreconfirm = (id: number) => () => {
       onOpenDeleteModal();
       setToDeleteEntity(id);
+    };
+
+    const onOpenEditModal = (entity: U) => () => {
+      setIsEditing(true);
+      onOpenCreatePatientModal();
+      reset(dtoToExtendedDto(entity));
+    };
+
+    const onOpenCreateModal = () => {
+      reset({});
+      onOpenCreatePatientModal();
     };
 
     return (
@@ -96,11 +123,7 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
           onSearchValueChange={handleSearchChange}
         >
           <HStack spacing="10px" mb="10px" justifyContent="flex-start">
-            <Button
-              colorScheme="teal"
-              size="sm"
-              onClick={onOpenCreatePatientModal}
-            >
+            <Button colorScheme="teal" size="sm" onClick={onOpenCreateModal}>
               Registrar Paciente
             </Button>
             <Button colorScheme="teal" size="sm" variant="outline">
@@ -140,6 +163,7 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
                           deleteAction={onOpenDeleteModalPreconfirm(
                             entity.id || -1
                           )}
+                          editAction={onOpenEditModal(entity)}
                         />
                       </Td>
                     </Tr>
@@ -163,7 +187,11 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
           onConfirm={() => {}}
           birthdate={date}
           setBirthdate={setDate}
-          onSubmit={handleSubmit(onCreatePatient)}
+          onSubmit={
+            isEditing
+              ? handleSubmit(onEditPatient)
+              : handleSubmit(onCreatePatient)
+          }
           register={register}
         />
       </>

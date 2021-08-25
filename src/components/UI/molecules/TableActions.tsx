@@ -5,9 +5,13 @@ import { BsBoxArrowUpRight, BsFillTrashFill } from "react-icons/bs";
 
 interface ITableActions {
   deleteAction: React.MouseEventHandler<HTMLButtonElement> | undefined;
+  editAction: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
-const TableActions: React.FC<ITableActions> = ({ deleteAction }) => {
+const TableActions: React.FC<ITableActions> = ({
+  deleteAction,
+  editAction,
+}) => {
   return (
     <ButtonGroup variant="solid" size="sm" spacing={3}>
       <IconButton
@@ -18,6 +22,7 @@ const TableActions: React.FC<ITableActions> = ({ deleteAction }) => {
       <IconButton
         aria-label="edit-button"
         colorScheme="green"
+        onClick={editAction}
         icon={<AiFillEdit />}
       />
       <IconButton
