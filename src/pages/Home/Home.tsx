@@ -70,26 +70,26 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
       assignEntites();
     }, [getAll]);
 
-    const onCreatePatient = async (data: unknown) => {
+    const onLoadingCallback = async (callback: Function) => {
       setOnLoading(true);
-      await create(dtoToEntityMapper(data as U));
+      callback();
       setOnLoading(false);
+    };
+
+    const onCreatePatient = async (data: unknown) => {
+      onLoadingCallback(async () => await create(dtoToEntityMapper(data as U)));
       onCloseCreatePatientModal();
     };
 
     const onEditPatient = async (data: unknown) => {
-      setOnLoading(true);
-      await update(dtoToEntityMapper(data as U));
-      setOnLoading(false);
+      onLoadingCallback(async () => await update(dtoToEntityMapper(data as U)));
 
       setIsEditing(false);
       onCloseCreatePatientModal();
     };
 
     const onDelete = (id: number) => async () => {
-      setOnLoading(true);
-      await deleteEntity(id);
-      setOnLoading(false);
+      onLoadingCallback(async () => await deleteEntity(id));
       onCloseDeleteModal();
     };
 

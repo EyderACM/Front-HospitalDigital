@@ -18,7 +18,7 @@ import { FiMenu, FiSearch } from "react-icons/fi";
 import { BsMoon } from "react-icons/bs";
 import SidebarContent from "components/UI/molecules/SidebarContent";
 
-const SidebarPanel: React.FC<ISidebarPanel> = ({ children }) => {
+const SidebarPanel: React.FC = ({ children }) => {
   const sidebar = useDisclosure();
   const { toggleColorMode } = useColorMode();
 
