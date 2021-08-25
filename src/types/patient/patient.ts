@@ -10,4 +10,15 @@ interface IPatient {
   registeredDate?: string;
 }
 
+const patientGenerator = (): IPatient => ({
+  firstName: "",
+  lastName: "",
+  age: 0,
+  sex: "",
+  birthDate: "",
+  cityName: "",
+  registeredDate: "",
+});
+
+export { patientGenerator };
 export default IPatient;
