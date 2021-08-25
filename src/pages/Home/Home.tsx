@@ -5,19 +5,22 @@ import {
   DrawerContent,
   DrawerOverlay,
   Flex,
-  IconButton,
   Input,
   InputGroup,
   InputLeftElement,
+  useColorMode,
   useColorModeValue,
   useDisclosure,
+  IconButton,
 } from "@chakra-ui/react";
 import { FiMenu, FiSearch } from "react-icons/fi";
+import { BsMoon } from "react-icons/bs";
 import React from "react";
 import SidebarContent from "components/UI/molecules/SidebarContent";
 
-export default function Swibc() {
+const Home = () => {
   const sidebar = useDisclosure();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   return (
     <Box
@@ -57,14 +60,19 @@ export default function Swibc() {
           />
           <InputGroup w="96" display={{ base: "none", md: "flex" }}>
             <InputLeftElement color="gray.500" children={<FiSearch />} />
-            <Input placeholder="Search for articles..." />
+            <Input placeholder="Buscar..." />
           </InputGroup>
 
           <Flex align="center">
+            <IconButton
+              aria-label="dark mode button"
+              icon={<BsMoon />}
+              onClick={toggleColorMode}
+            />
             <Avatar
               ml="4"
               size="sm"
-              name="anubra266"
+              name="Doctor"
               src="https://cdn.crello.com/api/media/small/283922438/stock-photo-serious-doctor-glasses-white-coat"
               cursor="pointer"
             />
@@ -78,4 +86,6 @@ export default function Swibc() {
       </Box>
     </Box>
   );
-}
+};
+
+export default Home;
