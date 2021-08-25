@@ -15,12 +15,16 @@ import {
 } from "@chakra-ui/react";
 import { FiMenu, FiSearch } from "react-icons/fi";
 import { BsMoon } from "react-icons/bs";
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import SidebarContent from "components/UI/molecules/SidebarContent";
 
 const Home = () => {
   const sidebar = useDisclosure();
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { toggleColorMode } = useColorMode();
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) =>
+    setSearchValue(event.target.value);
 
   return (
     <Box
@@ -58,9 +62,13 @@ const Home = () => {
             icon={<FiMenu />}
             size="sm"
           />
-          <InputGroup w="96" display={{ base: "none", md: "flex" }}>
+          <InputGroup w="96" display="flex" mx={{ base: "10px", sm: "none" }}>
             <InputLeftElement color="gray.500" children={<FiSearch />} />
-            <Input placeholder="Buscar..." />
+            <Input
+              value={searchValue}
+              onChange={handleSearchChange}
+              placeholder="Buscar..."
+            />
           </InputGroup>
 
           <Flex align="center">
@@ -68,6 +76,7 @@ const Home = () => {
               aria-label="dark mode button"
               icon={<BsMoon />}
               onClick={toggleColorMode}
+              size="sm"
             />
             <Avatar
               ml="4"
