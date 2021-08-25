@@ -40,4 +40,24 @@ const entityToDTOMapper: DtoToEntity<IPatient, IPatientDTO> = ({
   city_name: cityName,
 });
 
-export { dtoToEntityMapper, entityToDTOMapper };
+const entityToRawDTO = ({
+  firstName,
+  lastName,
+  age,
+  sex,
+  birthDate,
+  cityName,
+  hospitalId,
+  guardianId,
+}: IPatient) => ({
+  first_name: firstName,
+  last_name: lastName,
+  age,
+  sex,
+  birth_date: birthDate,
+  city_name: cityName,
+  hospital: hospitalId,
+  guardian: guardianId,
+});
+
+export { dtoToEntityMapper, entityToDTOMapper, entityToRawDTO };

@@ -9,6 +9,8 @@ interface IPatient {
   hospitalName?: string;
   guardianName?: string;
   guardianPhone?: string;
+  hospitalId?: number;
+  guardianId?: number;
   isActive?: boolean;
   registeredDate?: string;
 }

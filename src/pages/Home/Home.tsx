@@ -10,6 +10,9 @@ import {
   Tr,
   ButtonGroup,
   useDisclosure,
+  Flex,
+  Button,
+  HStack,
 } from "@chakra-ui/react";
 import { BsBoxArrowUpRight, BsFillTrashFill } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
@@ -21,6 +24,7 @@ import { When } from "react-if";
 import { hospitalTableGenerator } from "types/hospital/hospital";
 import { guardianTableGenerator } from "types/guardian/guardian";
 import Modal from "components/UI/molecules/Modal";
+import RegisterPatientModal from "components/UI/molecules/RegisterPatientModal";
 
 const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
   useService: () => BaseService<T, U>,
@@ -32,6 +36,11 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
       isOpen: isDeleteModalOpen,
       onOpen: onOpenDeleteModal,
       onClose: onCloseDeleteModal,
+    } = useDisclosure();
+    const {
+      isOpen: isCreatePatientModalOpen,
+      onOpen: onOpenCreatePatientModal,
+      onClose: onCloseCreatePatientModal,
     } = useDisclosure();
     const [entities, setEntities] = useState<U[]>([]);
     const [toDeleteEntity, setToDeleteEntity] = useState<number>(-1);
@@ -67,6 +76,18 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
           searchValue={searchValue}
           onSearchValueChange={handleSearchChange}
         >
+          <HStack spacing="10px" mb="10px" justifyContent="flex-start">
+            <Button
+              colorScheme="teal"
+              size="sm"
+              onClick={onOpenCreatePatientModal}
+            >
+              Registrar Paciente
+            </Button>
+            <Button colorScheme="teal" size="sm" variant="outline">
+              Imprimir información
+            </Button>
+          </HStack>
           <Table
             borderRadius="12px"
             variant="simple"
@@ -90,7 +111,7 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
               <When condition={entities !== undefined}>
                 {entities !== undefined &&
                   entities.map((entity) => (
-                    <Tr>
+                    <Tr key={entity.id}>
                       {Object.entries(dtoToEntityMapper(entity)).map(
                         ([key, value], i) =>
                           i !== 0 ? <Td key={key}>{value}</Td> : <></>
@@ -133,6 +154,12 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
             </Tbody>
           </Table>
         </SidebarPanel>
+        <RegisterPatientModal
+          onClose={onCloseCreatePatientModal}
+          isOpen={isCreatePatientModalOpen}
+          isLoading={onLoading}
+          onConfirm={() => {}}
+        />
       </>
     );
   };
