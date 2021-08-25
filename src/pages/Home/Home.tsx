@@ -1,12 +1,10 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   useColorModeValue,
   IconButton,
   Table,
-  TableCaption,
   Tbody,
   Td,
-  Tfoot,
   Th,
   Thead,
   Tr,
@@ -15,9 +13,11 @@ import {
 import { BsBoxArrowUpRight, BsFillTrashFill } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
 import SidebarPanel from "components/templates/SidebarPanel";
+import usePatientService from "services/patient";
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
+  const { getAll } = usePatientService();
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) =>
     setSearchValue(event.target.value);
@@ -33,7 +33,6 @@ const Home = () => {
         bg={useColorModeValue("white", "gray.800")}
         overflowX="scroll"
       >
-        <TableCaption>Imperial to metric conversion factors</TableCaption>
         <Thead>
           <Tr>
             <Th>To convert</Th>
@@ -78,13 +77,6 @@ const Home = () => {
             <Td isNumeric>0.91444</Td>
           </Tr>
         </Tbody>
-        <Tfoot>
-          <Tr>
-            <Th>To convert</Th>
-            <Th>into</Th>
-            <Th isNumeric>multiply by</Th>
-          </Tr>
-        </Tfoot>
       </Table>
     </SidebarPanel>
   );
