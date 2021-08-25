@@ -40,8 +40,7 @@ const SidebarContent = (props: any) => (
       aria-label="Main Navigation"
     >
       <NavItem icon={FaUserAlt}>Patients</NavItem>
-      <NavItem icon={FaHandHoldingHeart}>Guardians</NavItem>
-      <NavItem icon={BiHealth}>Hospitals</NavItem>
+
       <NavItem icon={BsGearFill}>Settings</NavItem>
     </Flex>
   </Box>

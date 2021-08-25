@@ -1,6 +1,18 @@
-import { DtoToEntity } from "types/BaseMapper";
+import { DtoToEntity, RawDtoToExtendedDto } from "types/BaseMapper";
 import IPatient from "./patient";
 import IPatientDTO from "./patientDTO";
+
+const rawDtoToExtendedDto: RawDtoToExtendedDto<IPatientDTO> = ({
+  hospital,
+  guardian,
+  ...rest
+}: IPatientDTO): IPatientDTO => ({
+  hospital_name: hospital?.name,
+  guardian_first_name: guardian?.first_name,
+  guardian_last_name: guardian?.last_name,
+  guardian_phone: guardian?.phone,
+  ...rest,
+});
 
 const dtoToEntityMapper: DtoToEntity<IPatientDTO, IPatient> = ({
   id,
@@ -10,17 +22,25 @@ const dtoToEntityMapper: DtoToEntity<IPatientDTO, IPatient> = ({
   sex,
   birth_date,
   city_name,
-  is_active,
-  created_at,
+  hospital,
+  guardian,
+  guardian_first_name,
+  guardian_last_name,
+  guardian_phone,
+  hospital_name,
 }: IPatientDTO): IPatient => ({
   id,
   firstName: first_name,
   lastName: last_name,
-  age,
+  age: +age,
   sex,
-  birthDate: birth_date,
   cityName: city_name,
-  registeredDate: created_at,
+  hospitalName: hospital ? hospital?.name : hospital_name,
+  guardianName: guardian
+    ? `${guardian?.first_name} ${guardian?.last_name}`
+    : `${guardian_first_name} ${guardian_last_name}`,
+  guardianPhone: guardian ? guardian?.phone : guardian_phone,
+  birthDate: birth_date,
 });
 
 const entityToDTOMapper: DtoToEntity<IPatient, IPatientDTO> = ({
@@ -39,4 +59,40 @@ const entityToDTOMapper: DtoToEntity<IPatient, IPatientDTO> = ({
   city_name: cityName,
 });
 
-export { dtoToEntityMapper, entityToDTOMapper };
+const entityToRawDTOMapper = ({
+  hospitalId,
+  guardianId,
+  ...rest
+}: IPatient) => ({
+  ...entityToDTOMapper(rest),
+  hospital: hospitalId,
+  guardian: guardianId,
+});
+
+const entityToRawDTO = ({
+  firstName,
+  lastName,
+  age,
+  sex,
+  birthDate,
+  cityName,
+  hospitalId,
+  guardianId,
+}: IPatient) => ({
+  first_name: firstName,
+  last_name: lastName,
+  age,
+  sex,
+  birth_date: birthDate,
+  city_name: cityName,
+  hospital: hospitalId,
+  guardian: guardianId,
+});
+
+export {
+  dtoToEntityMapper,
+  entityToDTOMapper,
+  entityToRawDTO,
+  entityToRawDTOMapper,
+  rawDtoToExtendedDto,
+};

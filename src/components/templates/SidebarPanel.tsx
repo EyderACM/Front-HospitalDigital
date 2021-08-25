@@ -18,16 +18,7 @@ import { FiMenu, FiSearch } from "react-icons/fi";
 import { BsMoon } from "react-icons/bs";
 import SidebarContent from "components/UI/molecules/SidebarContent";
 
-interface ISidebarPanel {
-  searchValue: string;
-  onSearchValueChange: (event: ChangeEvent<HTMLInputElement>) => void;
-}
-
-const SidebarPanel: React.FC<ISidebarPanel> = ({
-  searchValue,
-  onSearchValueChange,
-  children,
-}) => {
+const SidebarPanel: React.FC = ({ children }) => {
   const sidebar = useDisclosure();
   const { toggleColorMode } = useColorMode();
 
@@ -36,7 +27,7 @@ const SidebarPanel: React.FC<ISidebarPanel> = ({
       as="section"
       bg={useColorModeValue("gray.50", "gray.700")}
       minH="100vh"
-      overflowX={{ base: "scroll", sm: "hidden" }}
+      overflowX={{ base: "scroll", xl: "hidden" }}
     >
       <SidebarContent display={{ base: "none", md: "unset" }} />
       <Drawer
@@ -59,7 +50,7 @@ const SidebarPanel: React.FC<ISidebarPanel> = ({
           bg={useColorModeValue("white", "gray.800")}
           borderBottomWidth="1px"
           borderColor={useColorModeValue("inherit", "gray.700")}
-          borderRadius={{ base: "0 0 10px 0", sm: "none" }}
+          borderRadius={{ base: "0 0 10px 0", xl: "none" }}
           h="14"
         >
           <IconButton
@@ -69,15 +60,6 @@ const SidebarPanel: React.FC<ISidebarPanel> = ({
             icon={<FiMenu />}
             size="sm"
           />
-          <InputGroup w="96" display="flex" mx={{ base: "10px", sm: "none" }}>
-            <InputLeftElement color="gray.500" children={<FiSearch />} />
-            <Input
-              value={searchValue}
-              onChange={onSearchValueChange}
-              placeholder="Buscar..."
-            />
-          </InputGroup>
-
           <Flex align="center">
             <IconButton
               aria-label="dark mode button"
