@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useColorModeValue,
   Table,
@@ -22,6 +22,8 @@ import Modal from "components/UI/molecules/Modal";
 import RegisterPatientModal from "components/UI/molecules/RegisterPatientModal";
 import { useForm } from "react-hook-form";
 import TableActions from "components/UI/molecules/TableActions";
+import turnIntoDatabaseDate from "utils/functions/turnIntoDatabaseDate";
+import useTableConvertor from "hooks/useTableConvertor";
 
 const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
   useService: () => BaseService<T, U>,
@@ -35,6 +37,7 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
     const [onLoading, setOnLoading] = useState(false);
     const { getAll, delete: deleteEntity, create, update } = useService();
     const [date, setDate] = useState(new Date());
+    const [convertToPdf] = useTableConvertor();
     const {
       isOpen: isDeleteModalOpen,
       onOpen: onOpenDeleteModal,
@@ -54,9 +57,6 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
     } = useForm();
 
     useEffect(() => {
-      const turnIntoDatabaseDate = (date: Date) =>
-        date.toISOString().split("T")[0];
-
       setValue("birth_date", turnIntoDatabaseDate(date), {
         shouldValidate: true,
       });
@@ -77,6 +77,10 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
     };
 
     const onCreatePatient = async (data: unknown) => {
+      console.log(data);
+      setValue("birth_date", turnIntoDatabaseDate(date), {
+        shouldValidate: true,
+      });
       onLoadingCallback(async () => await create(dtoToEntityMapper(data as U)));
       onCloseCreatePatientModal();
     };
@@ -116,7 +120,12 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
             <Button colorScheme="teal" size="sm" onClick={onOpenCreateModal}>
               Registrar Paciente
             </Button>
-            <Button colorScheme="teal" size="sm" variant="outline">
+            <Button
+              onClick={() => convertToPdf(entities.map(dtoToEntityMapper))}
+              colorScheme="teal"
+              size="sm"
+              variant="outline"
+            >
               Imprimir información
             </Button>
           </HStack>
@@ -134,7 +143,7 @@ const AdminPanelViewFactory = <T extends BaseEntity, U extends BaseEntity>(
                   ...hospitalTableGenerator(),
                   ...guardianTableGenerator(),
                 }).map((data) => (
-                  <Th>{data}</Th>
+                  <Th key={JSON.stringify(data)}>{data}</Th>
                 ))}
                 <Th>Acciones</Th>
               </Tr>
