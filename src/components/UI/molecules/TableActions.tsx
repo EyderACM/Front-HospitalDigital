@@ -15,11 +15,6 @@ const TableActions: React.FC<ITableActions> = ({
   return (
     <ButtonGroup variant="solid" size="sm" spacing={3}>
       <IconButton
-        aria-label="print-button"
-        colorScheme="blue"
-        icon={<BsBoxArrowUpRight />}
-      />
-      <IconButton
         aria-label="edit-button"
         colorScheme="green"
         onClick={editAction}
